@@ -34,6 +34,32 @@ func (c *ChatGptHandler) ChatCompletion(req *service.CompletionRequest) (string,
 	return resp.Choices[0].Message.Content, nil
 }
 
+func (c *ChatGptHandler) GenerateImages(req *service.GenerateImagesRequest) (*service.GenerateImagesResponse, error) {
+	gptResp, err := c.Client.CreateImage(
+		context.Background(),
+		marshallChatGptGenerateImageRequest(req),
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	images := make([]string, 0)
+	for _, img := range gptResp.Data {
+		switch *req.ResponseFormat {
+		case service.ImageFormatBase64:
+			images = append(images, img.B64JSON)
+		default:
+			images = append(images, img.URL)
+		}
+	}
+
+	return &service.GenerateImagesResponse{
+		Images:   images,
+		Provider: c.Type(),
+	}, nil
+}
+
 func marshallChatGptCompletionRequest(r *service.CompletionRequest) openai.ChatCompletionRequest {
 	req := openai.ChatCompletionRequest{
 		Messages: []openai.ChatCompletionMessage{
@@ -56,6 +82,22 @@ func marshallChatGptCompletionRequest(r *service.CompletionRequest) openai.ChatC
 	}
 	if r.TopP != nil {
 		req.TopP = *r.TopP
+	}
+	return req
+}
+
+func marshallChatGptGenerateImageRequest(r *service.GenerateImagesRequest) openai.ImageRequest {
+	req := openai.ImageRequest{
+		Prompt: r.Prompt,
+	}
+	if r.Size != nil {
+		req.Size = *r.Size
+	}
+	if r.ResponseFormat != nil {
+		req.ResponseFormat = string(*r.ResponseFormat)
+	}
+	if r.Number != nil {
+		req.N = *r.Number
 	}
 	return req
 }

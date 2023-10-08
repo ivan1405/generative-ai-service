@@ -12,4 +12,5 @@ const (
 type GenAIHandler interface {
 	Type() string
 	ChatCompletion(req *CompletionRequest) (string, error)
+	GenerateImages(req *GenerateImagesRequest) (*GenerateImagesResponse, error)
 }

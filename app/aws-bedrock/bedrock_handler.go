@@ -62,6 +62,10 @@ func (c *AWSBedrockHandler) ChatCompletion(req *service.CompletionRequest) (stri
 	return strings.TrimSpace(resp.Generations[0].Text), nil
 }
 
+func (c *AWSBedrockHandler) GenerateImages(req *service.GenerateImagesRequest) (*service.GenerateImagesResponse, error) {
+	return nil, nil
+}
+
 func marshallAWSBedrockCompletionRequest(r *service.CompletionRequest) (*bedrockruntime.InvokeModelInput, error) {
 	req := &BedrockInferenceRequest{
 		Prompt: r.Prompt,

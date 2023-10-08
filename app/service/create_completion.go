@@ -29,7 +29,7 @@ func createCompletion(c *gin.Context) {
 		return
 	}
 
-	handler := getHandler(c)
+	handler := GetHandler(c)
 	r, err := handler.ChatCompletion(compReq)
 	if err != nil {
 		slog.Error("Error creating chat completion %s", err)
@@ -43,14 +43,4 @@ func createCompletion(c *gin.Context) {
 		Response: r,
 		Provider: handler.Type(),
 	})
-}
-
-func getHandler(c *gin.Context) GenAIHandler {
-	handlerType := c.Request.Header.Get("Provider")
-	handler, exists := svc.Handlers[handlerType]
-	// default handler chat-gpt
-	if !exists {
-		return svc.Handlers[ChatGptHandlerType]
-	}
-	return handler
 }
