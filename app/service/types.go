@@ -1,14 +1,5 @@
 package service
 
-type CompletionRequest struct {
-	Prompt string `json:"prompt"`
-}
-
-type CompletionResponse struct {
-	Response string `json:"response"`
-	Provider string `json:"provider"`
-}
-
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
@@ -20,5 +11,5 @@ const (
 
 type GenAIHandler interface {
 	Type() string
-	ChatCompletion(message string) (string, error)
+	ChatCompletion(req *CompletionRequest) (string, error)
 }

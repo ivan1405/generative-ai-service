@@ -42,28 +42,14 @@ func (c *AWSBedrockHandler) Type() string {
 	return service.AmazonBedrockType
 }
 
-func (c *AWSBedrockHandler) ChatCompletion(prompt string) (string, error) {
-	req := &BedrockInferenceRequest{
-		Prompt:      prompt,
-		MaxTokens:   300,
-		Temperature: 0.1,
-		TopP:        0.9,
-	}
-	b, err := json.Marshal(req)
+func (c *AWSBedrockHandler) ChatCompletion(req *service.CompletionRequest) (string, error) {
+	bedrockReq, err := marshallAWSBedrockCompletionRequest(req)
 	if err != nil {
 		slog.Error("Error parsing request")
 		return "", err
 	}
 
-	modelId := "cohere.command-text-v14"
-	accept := "application/json"
-	contentType := "application/json"
-	r, err := c.Client.InvokeModel(&bedrockruntime.InvokeModelInput{
-		Body:        b,
-		ModelId:     &modelId,
-		Accept:      &accept,
-		ContentType: &contentType,
-	})
+	r, err := c.Client.InvokeModel(bedrockReq)
 	if err != nil {
 		return "", err
 	}
@@ -74,4 +60,43 @@ func (c *AWSBedrockHandler) ChatCompletion(prompt string) (string, error) {
 		return "", err
 	}
 	return strings.TrimSpace(resp.Generations[0].Text), nil
+}
+
+func marshallAWSBedrockCompletionRequest(r *service.CompletionRequest) (*bedrockruntime.InvokeModelInput, error) {
+	req := &BedrockInferenceRequest{
+		Prompt: r.Prompt,
+	}
+	if r.MaxTokens != nil {
+		req.MaxTokens = *r.MaxTokens
+	} else {
+		req.MaxTokens = 300
+	}
+	if r.Temperature != nil {
+		req.Temperature = *r.Temperature
+	} else {
+		req.Temperature = 0.1
+	}
+	if r.TopP != nil {
+		req.TopP = *r.TopP
+	} else {
+		req.TopP = 0.2
+	}
+
+	b, err := json.Marshal(req)
+	if err != nil {
+		return nil, err
+	}
+
+	modelId := "cohere.command-text-v14"
+	if r.Model != nil {
+		modelId = *r.Model
+	}
+	accept := "application/json"
+	contentType := "application/json"
+	return &bedrockruntime.InvokeModelInput{
+		Body:        b,
+		ModelId:     &modelId,
+		Accept:      &accept,
+		ContentType: &contentType,
+	}, nil
 }
