@@ -11,8 +11,10 @@ type ChatGptHandler struct {
 	Client *openai.Client
 }
 
-func (c *ChatGptHandler) Init(apiKey string) {
-	c.Client = openai.NewClient(apiKey)
+func NewChatGptHandler(apiKey string) *ChatGptHandler {
+	return &ChatGptHandler{
+		Client: openai.NewClient(apiKey),
+	}
 }
 
 func (c *ChatGptHandler) Type() string {

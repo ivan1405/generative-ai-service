@@ -51,6 +51,7 @@ func createCompletion(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, &ErrorResponse{
 			Error: err.Error(),
 		})
+		return
 	}
 
 	c.IndentedJSON(http.StatusOK, &CompletionResponse{

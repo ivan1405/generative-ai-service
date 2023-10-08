@@ -19,7 +19,6 @@ const (
 )
 
 type GenAIHandler interface {
-	Init(apiKey string)
 	Type() string
 	ChatCompletion(message string) (string, error)
 }

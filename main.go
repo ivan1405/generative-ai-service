@@ -14,12 +14,10 @@ func main() {
 	loadEnvVars()
 
 	// Initialize chat-gpt
-	chatGptHandler := &chatgpt.ChatGptHandler{}
-	chatGptHandler.Init(os.Getenv("CHAT_GPT_KEY"))
+	chatGptHandler := chatgpt.NewChatGptHandler(os.Getenv("CHAT_GPT_KEY"))
 
 	// Initialize aws-bedrock
-	awsBedrockHandler := &awsbedrock.AWSBedrockHandler{}
-	awsBedrockHandler.Init(os.Getenv("AWS_BEDROCK_KEY"))
+	awsBedrockHandler := awsbedrock.NewAWSBedrockHandler()
 
 	genAIService := service.InitRouter()
 	genAIService.ConfigureHandlers(
