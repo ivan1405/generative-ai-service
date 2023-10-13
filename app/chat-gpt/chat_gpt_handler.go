@@ -57,7 +57,7 @@ func (c *ChatGptHandler) GenerateImages(req *service.GenerateImagesRequest) (*se
 	}
 
 	return &service.GenerateImagesResponse{
-		Images:   images,
+		Image:    images[0],
 		Provider: c.Type(),
 	}, nil
 }

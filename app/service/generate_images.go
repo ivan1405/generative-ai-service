@@ -12,8 +12,8 @@ type GenerateImagesRequest struct {
 }
 
 type GenerateImagesResponse struct {
-	Images   []string `json:"images"`
-	Provider string   `json:"provider"`
+	Image    string `json:"image"`
+	Provider string `json:"provider"`
 }
 
 func generateImages(c *gin.Context) {

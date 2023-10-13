@@ -116,9 +116,7 @@ func (c *AWSBedrockHandler) GenerateImages(req *service.GenerateImagesRequest) (
 		return nil, err
 	}
 	return &service.GenerateImagesResponse{
-		Images: []string{
-			resp.Artifacts[0].Base64,
-		},
+		Image:    resp.Artifacts[0].Base64,
 		Provider: c.Type(),
 	}, nil
 }
