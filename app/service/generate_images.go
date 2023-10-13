@@ -8,23 +8,13 @@ import (
 )
 
 type GenerateImagesRequest struct {
-	Prompt         string       `json:"prompt"`
-	Number         *int         `json:"n,omitempty"`
-	ResponseFormat *ImageFormat `json:"response_format,omitempty"`
-	Size           *string      `json:"size,omitempty"`
+	Prompt string `json:"prompt"`
 }
 
 type GenerateImagesResponse struct {
 	Images   []string `json:"images"`
 	Provider string   `json:"provider"`
 }
-
-type ImageFormat string
-
-const (
-	ImageFormatBase64 ImageFormat = "b64_json"
-	ImageFormatUrl    ImageFormat = "url"
-)
 
 func generateImages(c *gin.Context) {
 	var genImgReq *GenerateImagesRequest
@@ -35,7 +25,7 @@ func generateImages(c *gin.Context) {
 		return
 	}
 
-	handler := GetHandler(c)
+	handler := GetHandler(c.Request.Header.Get("Provider"))
 	resp, err := handler.GenerateImages(genImgReq)
 	if err != nil {
 		slog.Error("Error generating image %s", err)

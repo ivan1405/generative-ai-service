@@ -15,6 +15,7 @@ func InitRouter() *GenAIService {
 	svc = &GenAIService{
 		Router: gin.Default(),
 	}
+	svc.Router.GET("/ai-capabilities", getCapabilities)
 	svc.Router.POST("/completion", createCompletion)
 	svc.Router.POST("/images/generation", generateImages)
 	return svc
@@ -32,8 +33,7 @@ func (genAIApi *GenAIService) Start() {
 	svc.Router.Run()
 }
 
-func GetHandler(c *gin.Context) GenAIHandler {
-	handlerType := c.Request.Header.Get("Provider")
+func GetHandler(handlerType string) GenAIHandler {
 	handler, exists := svc.Handlers[handlerType]
 	// default handler chat-gpt
 	if !exists {

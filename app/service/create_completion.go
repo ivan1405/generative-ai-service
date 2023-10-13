@@ -29,7 +29,7 @@ func createCompletion(c *gin.Context) {
 		return
 	}
 
-	handler := GetHandler(c)
+	handler := GetHandler(c.Request.Header.Get("Provider"))
 	r, err := handler.ChatCompletion(compReq)
 	if err != nil {
 		slog.Error("Error creating chat completion %s", err)
