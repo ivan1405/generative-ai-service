@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "ab34b0da-ec2e-45dc-8278-2cff5f57c6e8",
+		"name": "Gen-AI Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1672800",
+		"_collection_link": "https://ivan-perez-team.postman.co/workspace/Team-Workspace~96b5c947-b700-4417-8632-770c2cb675c8/collection/1672800-ab34b0da-ec2e-45dc-8278-2cff5f57c6e8?action=share&source=collection_link&creator=1672800"
+	},
+	"item": [
+		{
+			"name": "Get Capabilities",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/ai-capabilities",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"ai-capabilities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create completion",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Provider",
+						"value": "aws-bedrock",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"prompt\": \"are you happy?\",\r\n    \"temperature\": 0.1,\r\n    \"max_tokens\": 300",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/completion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"completion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate images",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Provider",
+						"value": "aws-bedrock",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"prompt\": \"A dog playing football in the beach with some children\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/images/generation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"images",
+						"generation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Text To Speech",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Provider",
+						"value": "eleven-labs",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"prompt\": \"Hello there! I can now speak as well!\",\r\n    \"model\":\"eleven_multilingual_v1\",\r\n    \"voiceId\": \"21m00Tcm4TlvDq8ikWAM\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/text-to-speech",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"text-to-speech"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -62,6 +62,10 @@ func (c *ChatGptHandler) GenerateImages(req *service.GenerateImagesRequest) (*se
 	}, nil
 }
 
+func (c *ChatGptHandler) TextToSpeech(req *service.TextToSpeechRequest) (*service.TextToSpeechResponse, error) {
+	return nil, nil
+}
+
 func marshallChatGptCompletionRequest(r *service.CompletionRequest) openai.ChatCompletionRequest {
 	req := openai.ChatCompletionRequest{
 		Messages: []openai.ChatCompletionMessage{

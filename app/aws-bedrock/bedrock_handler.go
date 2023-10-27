@@ -121,6 +121,10 @@ func (c *AWSBedrockHandler) GenerateImages(req *service.GenerateImagesRequest) (
 	}, nil
 }
 
+func (c *AWSBedrockHandler) TextToSpeech(req *service.TextToSpeechRequest) (*service.TextToSpeechResponse, error) {
+	return nil, nil
+}
+
 func marshallAWSBedrockCompletionRequest(r *service.CompletionRequest) (*bedrockruntime.InvokeModelInput, error) {
 	req := &BedrockInferenceRequest{
 		Prompt: r.Prompt,

@@ -18,6 +18,7 @@ func InitRouter() *GenAIService {
 	svc.Router.GET("/ai-capabilities", getCapabilities)
 	svc.Router.POST("/completion", createCompletion)
 	svc.Router.POST("/images/generation", generateImages)
+	svc.Router.POST("/text-to-speech", textToSpeech)
 	return svc
 }
 

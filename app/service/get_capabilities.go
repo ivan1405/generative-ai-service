@@ -10,6 +10,7 @@ func getCapabilities(c *gin.Context) {
 	handlerTypes := []string{
 		ChatGptHandlerType,
 		AmazonBedrockType,
+		ElevenLabsType,
 	}
 
 	var getCapabilitiesResponse = make(map[string][]string)

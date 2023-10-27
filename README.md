@@ -13,7 +13,9 @@ There is an endpoint that exposes all the capabilities integrated in the service
 
 ### Request
 
-```GET /ai-capabilities```
+```
+GET http://localhost:8080/ai-capabilities
+```
 
 ### Response
 ```json
@@ -25,6 +27,10 @@ There is an endpoint that exposes all the capabilities integrated in the service
     "chat-gpt": [
         "Completions",
         "Image generation"
+    ],
+    "eleven-labs": [
+        "Text to speech",
+        "Speech to text"
     ]
 }
 ```
@@ -35,12 +41,16 @@ Allows users to create chat completions by providing a prompt as input paramter.
 
 ### Request
 
+```
+POST http://localhost:8080/completion
+```
+
 Payload
 
 ```json
 {
     "prompt": "What's the purpose of life?",
-    "model": "gpt-5",    //optional
+    "model": "gpt-4",    //optional
     "temperature": 0.1,  //optional
     "max_tokens": 200,   //optional
     "top_p": 0.9         //optional
@@ -52,6 +62,7 @@ If optional parameters are not informed, the default ones indicated by each prov
 Header 'Provider' can also be set to indicate where to redirect our request, possible values are:
 - Chat GPT -> `Provider: 'chat-gpt'`
 - AWS Bedrock -> `Provider: 'aws-bedrock'`
+- Eleven Labs -> `Provider: 'eleven-labs'`
 
 If no header is set, default provider is Chat GPT
 
@@ -68,6 +79,10 @@ If no header is set, default provider is Chat GPT
 Image generation is one of the most famous features of Generative AI providers. This has been also integrated in the service.
 
 ### Request
+
+```
+POST http://localhost:8080/images/generation
+```
 
 Payload
 
@@ -86,6 +101,30 @@ The response will return the image encoded in Base64
 }
 ```
 
+## Text To Speech
+
+The provider Eleven Labs is able to convert text to audio. This has also been integrated and can be used through the following endpoint
+
+### Request
+
+```
+POST http://localhost:8080/text-to-speech
+```
+
+Payload
+
+```json
+    "prompt": "Hello there! I can now speak as well!",
+    "model":"eleven_multilingual_v1",
+    "voiceId": "21m00Tcm4TlvDq8ikWAM"
+}
+```
+
+You can try with different voices available. Here is the [full list](https://api.elevenlabs.io/v1/voices).
+
+### Response
+
+The API will return an attachment with a file called `audio_file.mp3`. If you download it it should contains the transcription to your request
 
 ## Configuration
 
@@ -94,5 +133,6 @@ In order for the service to work, provider credentials need to be configured. Th
 ```
 CHAT_GPT_KEY="sk-dsd<szxdf"
 AWS_ACCESS_KEY_ID="DSFDSAFDASFHSDSDFG"
-AWS_SECRET_ACCESS_KEY ="dsdfSD43sadF4asdfWEdsfafda$/dcf"
+AWS_SECRET_ACCESS_KEY="dsdfSD43sadF4asdfWEdsfafda$/dcf"
+ELEVEN_LABS_API_KEY="348ew35e9e7c7807b3345440228dwsf3a"
 ```
