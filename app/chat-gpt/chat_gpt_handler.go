@@ -7,29 +7,29 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-type ChatGptHandler struct {
+type Handler struct {
 	Client *openai.Client
 }
 
-func NewChatGptHandler(apiKey string) *ChatGptHandler {
-	return &ChatGptHandler{
+func NewChatGptHandler(apiKey string) *Handler {
+	return &Handler{
 		Client: openai.NewClient(apiKey),
 	}
 }
 
-func (c *ChatGptHandler) Type() string {
+func (h *Handler) Type() string {
 	return service.ChatGptHandlerType
 }
 
-func (c *ChatGptHandler) GetCapabilities() []string {
+func (h *Handler) GetCapabilities() []string {
 	return []string{
 		service.Completions,
 		service.ImageGeneration,
 	}
 }
 
-func (c *ChatGptHandler) ChatCompletion(req *service.CompletionRequest) (string, error) {
-	resp, err := c.Client.CreateChatCompletion(
+func (h *Handler) ChatCompletion(req *service.CompletionRequest) (string, error) {
+	resp, err := h.Client.CreateChatCompletion(
 		context.Background(),
 		marshallChatGptCompletionRequest(req),
 	)
@@ -41,8 +41,8 @@ func (c *ChatGptHandler) ChatCompletion(req *service.CompletionRequest) (string,
 	return resp.Choices[0].Message.Content, nil
 }
 
-func (c *ChatGptHandler) GenerateImages(req *service.GenerateImagesRequest) (*service.GenerateImagesResponse, error) {
-	gptResp, err := c.Client.CreateImage(
+func (h *Handler) GenerateImages(req *service.GenerateImagesRequest) (*service.GenerateImagesResponse, error) {
+	gptResp, err := h.Client.CreateImage(
 		context.Background(),
 		marshallChatGptGenerateImageRequest(req),
 	)
@@ -58,11 +58,11 @@ func (c *ChatGptHandler) GenerateImages(req *service.GenerateImagesRequest) (*se
 
 	return &service.GenerateImagesResponse{
 		Image:    images[0],
-		Provider: c.Type(),
+		Provider: h.Type(),
 	}, nil
 }
 
-func (c *ChatGptHandler) TextToSpeech(req *service.TextToSpeechRequest) (*service.TextToSpeechResponse, error) {
+func (h *Handler) TextToSpeech(req *service.TextToSpeechRequest) (*service.TextToSpeechResponse, error) {
 	return nil, nil
 }
 

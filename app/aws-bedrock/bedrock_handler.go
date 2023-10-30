@@ -12,7 +12,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-type AWSBedrockHandler struct {
+type Handler struct {
 	Client *bedrockruntime.BedrockRuntime
 }
 
@@ -60,32 +60,32 @@ type BedrockImageArtifact struct {
 	Base64 string `json:"base64"`
 }
 
-func NewAWSBedrockHandler() *AWSBedrockHandler {
+func NewAWSBedrockHandler() *Handler {
 	s := session.Must(session.NewSession())
-	return &AWSBedrockHandler{
+	return &Handler{
 		Client: bedrockruntime.New(s, aws.NewConfig().WithRegion("us-east-1")),
 	}
 }
 
-func (c *AWSBedrockHandler) Type() string {
+func (h *Handler) Type() string {
 	return service.AmazonBedrockType
 }
 
-func (c *AWSBedrockHandler) GetCapabilities() []string {
+func (h *Handler) GetCapabilities() []string {
 	return []string{
 		service.Completions,
 		service.ImageGeneration,
 	}
 }
 
-func (c *AWSBedrockHandler) ChatCompletion(req *service.CompletionRequest) (string, error) {
+func (h *Handler) ChatCompletion(req *service.CompletionRequest) (string, error) {
 	bedrockReq, err := marshallAWSBedrockCompletionRequest(req)
 	if err != nil {
 		slog.Error("Error parsing request")
 		return "", err
 	}
 
-	r, err := c.Client.InvokeModel(bedrockReq)
+	r, err := h.Client.InvokeModel(bedrockReq)
 	if err != nil {
 		return "", err
 	}
@@ -98,14 +98,14 @@ func (c *AWSBedrockHandler) ChatCompletion(req *service.CompletionRequest) (stri
 	return strings.TrimSpace(resp.Generations[0].Text), nil
 }
 
-func (c *AWSBedrockHandler) GenerateImages(req *service.GenerateImagesRequest) (*service.GenerateImagesResponse, error) {
+func (h *Handler) GenerateImages(req *service.GenerateImagesRequest) (*service.GenerateImagesResponse, error) {
 	bedrockReq, err := marshallAWSBedrockImageGenerationRequest(req)
 	if err != nil {
 		slog.Error("Error parsing request")
 		return nil, err
 	}
 
-	r, err := c.Client.InvokeModel(bedrockReq)
+	r, err := h.Client.InvokeModel(bedrockReq)
 	if err != nil {
 		return nil, err
 	}
@@ -117,11 +117,11 @@ func (c *AWSBedrockHandler) GenerateImages(req *service.GenerateImagesRequest) (
 	}
 	return &service.GenerateImagesResponse{
 		Image:    resp.Artifacts[0].Base64,
-		Provider: c.Type(),
+		Provider: h.Type(),
 	}, nil
 }
 
-func (c *AWSBedrockHandler) TextToSpeech(req *service.TextToSpeechRequest) (*service.TextToSpeechResponse, error) {
+func (h *Handler) TextToSpeech(req *service.TextToSpeechRequest) (*service.TextToSpeechResponse, error) {
 	return nil, nil
 }
 

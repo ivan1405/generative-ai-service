@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-type ElevenLabsHandler struct {
+type Handler struct {
 	apiKey string
 	client *http.Client
 }
@@ -31,33 +31,33 @@ func (e *CustomError) Error() string {
 	return e.Message
 }
 
-func NewElevenLabsHandler(apiKey string) *ElevenLabsHandler {
-	return &ElevenLabsHandler{
+func NewElevenLabsHandler(apiKey string) *Handler {
+	return &Handler{
 		apiKey: apiKey,
 		client: &http.Client{},
 	}
 }
 
-func (c *ElevenLabsHandler) Type() string {
+func (h *Handler) Type() string {
 	return service.ElevenLabsType
 }
 
-func (c *ElevenLabsHandler) GetCapabilities() []string {
+func (h *Handler) GetCapabilities() []string {
 	return []string{
 		service.TextToSpeech,
 		service.SpeechToText,
 	}
 }
 
-func (c *ElevenLabsHandler) ChatCompletion(req *service.CompletionRequest) (string, error) {
+func (h *Handler) ChatCompletion(req *service.CompletionRequest) (string, error) {
 	return "not supported", nil
 }
 
-func (c *ElevenLabsHandler) GenerateImages(req *service.GenerateImagesRequest) (*service.GenerateImagesResponse, error) {
+func (h *Handler) GenerateImages(req *service.GenerateImagesRequest) (*service.GenerateImagesResponse, error) {
 	return nil, nil
 }
 
-func (c *ElevenLabsHandler) TextToSpeech(req *service.TextToSpeechRequest) (*service.TextToSpeechResponse, error) {
+func (h *Handler) TextToSpeech(req *service.TextToSpeechRequest) (*service.TextToSpeechResponse, error) {
 
 	url := "https://api.elevenlabs.io/v1/text-to-speech/" + req.VoiceId
 
@@ -82,9 +82,9 @@ func (c *ElevenLabsHandler) TextToSpeech(req *service.TextToSpeechRequest) (*ser
 
 	elevenLabsReq.Header.Set("Accept", "audio/mpeg")
 	elevenLabsReq.Header.Set("Content-Type", "application/json")
-	elevenLabsReq.Header.Set("xi-api-key", c.apiKey)
+	elevenLabsReq.Header.Set("xi-api-key", h.apiKey)
 
-	resp, err := c.client.Do(elevenLabsReq)
+	resp, err := h.client.Do(elevenLabsReq)
 	if err != nil {
 		return nil, err
 	}
@@ -95,9 +95,9 @@ func (c *ElevenLabsHandler) TextToSpeech(req *service.TextToSpeechRequest) (*ser
 		return nil, err
 	}
 
-	// Elevent labs does not return error, but a valid response
+	// Eleven labs does not return error, but a valid response
 	// with status codes. So we need a custom error handling
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		var errorResp ElevenLabsErrorResponse
 		err := json.Unmarshal(respBody, &errorResp)
 		if err != nil {
